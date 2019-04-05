@@ -34,8 +34,8 @@ public class Benchmark
         this.noOps_ = noOps;
         this.executor = new PausableThreadPoolExecutor(noThreads, noThreads, 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         final GenericObjectPool.Config poolConfig = new GenericObjectPool.Config();
-        poolConfig.testOnBorrow = true;
-        poolConfig.testOnReturn = true;
+        poolConfig.testOnBorrow = false;
+        poolConfig.testOnReturn = false;
         poolConfig.maxActive = noJedisConn;
         this.pool = new JedisPool(poolConfig, host, port);
         this.data = RandomStringUtils.random(dataSize);
@@ -55,7 +55,14 @@ public class Benchmark
         public void run()
         {
             long startTime = System.nanoTime();
+	    String redisPass = "";
+	    try {
+		    redisPass = System.getenv("REDIS_PASS");
+	    } catch (Exception ignore) { }
             Jedis jedis = pool.getResource();
+	    if ( redisPass != null ){
+		    jedis.auth(redisPass);
+	    }
             jedis.set(RandomStringUtils.random(15), data);
             setRunTimes.offer(System.nanoTime() - startTime);
             pool.returnResource(jedis);

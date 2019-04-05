@@ -4,7 +4,14 @@ Project to benchmark Redis using a Java Client [Jedis](https://github.com/xetort
 ##Building
 Download (or clone) the code and run `mvn install`.
 It should build a jar called jedis-benchmark-1.0-jar-with-dependencies.jar.
+
 ##Usage
+
+To use a password to connect to redis, use and environment variable
+```
+export REDIS_PASS=MYPASSWORD
+```
+
 The program assumes defaults for all the values, which can be changed by using the given options.
 
 
